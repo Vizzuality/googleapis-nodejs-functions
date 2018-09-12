@@ -1,0 +1,7 @@
+---
+env:
+  mocha: true
+  es6: true
+rules:
+  node/no-unpublished-require: off
+  no-console: off

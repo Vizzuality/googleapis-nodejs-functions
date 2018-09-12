@@ -1,0 +1,5 @@
+node_modules/*
+samples/*
+system-test/*
+test/*
+src/**/doc/*
