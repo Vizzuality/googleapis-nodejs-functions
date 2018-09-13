@@ -1,3 +1,4 @@
+const path = require('path');
 
 // Imports the Google Cloud client library
 const { GCF } = require('../build/src'); // @TODO vizzuality/googleapis-nodejs-functions
@@ -7,13 +8,13 @@ const projectId = 'cameratraprepo';
 
 // Creates a client
 const gcf = new GCF({
-  keyFilename: './credentials.json',
+  keyFilename: `${path.join(__dirname, '../')}credentials.json`,
   projectId
 });
 
 // Get Functions
 gcf
-  .getFunctions()
+  .getCloudFunctions()
   .then(data => {
     const fns = data[0];
     //console.log('FUNCTIONS: ', fns);

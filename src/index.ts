@@ -214,7 +214,7 @@ class GCF extends Service {
    * @param {CloudFunctionCallback} [callback] Callback function.
    * @returns {Promise<CloudFunction[]>}
    */
-  public getFunctions(query: CloudFunctionQuery = {}, callback?: CloudFunctionsCallback): void {
+  public getCloudFunctions(query: CloudFunctionQuery = {}, callback?: CloudFunctionsCallback): void | Promise<[CloudFunction[], any]> {
 
     const location = query.location || this.location; // GCP region
 
@@ -254,7 +254,7 @@ class GCF extends Service {
  *
  * These methods can be auto-paginated.
  */
-paginator.extend(GCF, 'getFunctions');
+paginator.extend(GCF, 'getCloudFunctions');
 
 /*! Developer Documentation
  *

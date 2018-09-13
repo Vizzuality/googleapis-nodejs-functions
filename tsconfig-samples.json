@@ -1,0 +1,15 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "module": "commonjs",
+    "lib": [
+      "es6"
+    ]
+  },
+  "include": [
+    "samples-ts/*.ts",
+  ]
+}

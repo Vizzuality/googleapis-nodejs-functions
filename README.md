@@ -57,7 +57,7 @@ const gcf = new GCF({
 
 // Get Functions and metadata
 gcf
-  .getFunctions()
+  .getCloudFunctions()
   .then(data => {
     const fns = data[0];
     //console.log('FUNCTIONS: ', fns);

@@ -40,7 +40,11 @@ class CloudFunction extends ServiceObject {
     options = options || {};
 
     const methods = {
-      create: true
+      create: true,
+      delete: true,
+      exists: true,
+      get: true,
+      getMetadata: true
     };
 
     super({

@@ -39,6 +39,9 @@
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
+    "compile-samples": "tsc -p tsconfig-samples.json",
+    "js-samples": "NODE_PATH=./samples node ./samples/functions.js",
+    "ts-samples": "NODE_PATH=./samples-ts node ./samples-ts/functions.js",
     "fix": "gts fix"
   },
   "dependencies": {
