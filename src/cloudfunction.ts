@@ -3,7 +3,7 @@ import {promisifyAll} from '@google-cloud/promisify';
 import * as is from 'is';
 import * as request from 'request';
 
-import { GCF } from '.';
+import { GCF, CloudFunctionMetadata } from '.';
 
 /**
  * Create a Function object to interact with a Cloud Functions.
@@ -182,7 +182,7 @@ class CloudFunction extends ServiceObject {
    * @param {FunctionCallback} [callback] Callback function.
    * @returns {Promise<CloudFunctionMetadata>}
    */
-  getMetadata(options, callback?) {
+  getMetadata(options, callback?): void | Promise<CloudFunctionMetadata>{
     if (is.fn(options)) {
       callback = options;
       options = {};

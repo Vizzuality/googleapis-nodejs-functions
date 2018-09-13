@@ -8,7 +8,7 @@ import * as request from 'request';
 import { CloudFunction } from './cloudfunction';
 
 // @TODO
-interface CloudFunctionMetadata {
+export interface CloudFunctionMetadata {
   runtime: string;
 }
 

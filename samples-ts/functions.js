@@ -26,7 +26,15 @@ getCloudFunctions()
     .then(value => {
     const fns = value[0];
     const fn0 = fns[0];
-    console.log(fn0);
+    const fnmPromise = fn0.getMetadata({});
+    fnmPromise
+        .then(value => {
+        const fn0Metadata = value[0];
+        console.log(fn0Metadata);
+    })
+        .catch(err => {
+        console.log(err);
+    });
 })
     .catch(err => {
     console.log(err);
