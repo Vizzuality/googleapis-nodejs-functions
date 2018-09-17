@@ -15,5 +15,6 @@ google-cloud-logging-bunyan-*.tgz
 package-lock.json
 credentials.json
 build
+samples/package.json
+samples-ts/package.json
 samples-ts/*.js
-samples-ts/*.js.map

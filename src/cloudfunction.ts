@@ -13,7 +13,7 @@ import { GCF, CloudFunctionMetadata } from '.';
  * @param {object} [options] Configuration object.
  * @param {string} [options.userProject] User project.
  */
-class CloudFunction extends ServiceObject {
+export class CloudFunction extends ServiceObject {
   /**
    * The function's name.
    * @name CloudFunction#name
@@ -222,7 +222,3 @@ class CloudFunction extends ServiceObject {
 promisifyAll(CloudFunction, {
   exclude: [],
 });
-
-/**
- */
-export { CloudFunction };

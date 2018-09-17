@@ -13,12 +13,12 @@ export interface CloudFunctionMetadata {
 }
 
 // TODO
-interface CloudFunctionConfig {
+export interface CloudFunctionConfig {
   runtime?: string;
   location?: string;
 }
 
-interface CloudFunctionQuery {
+export interface CloudFunctionQuery {
   autoPaginate?: true;
   maxApiCalls?: number;
   maxResults?: number;
@@ -27,13 +27,13 @@ interface CloudFunctionQuery {
   location?: string;
 }
 
-interface Status {
+export interface Status {
   code: number;
   message: string;
   details: object[];
 }
 
-interface Operation {
+export interface Operation {
   name: string;
   metadata: object;
   done: boolean;
@@ -41,21 +41,21 @@ interface Operation {
   response: object;
 }
 
-interface ListOperationsResponse {
+export interface ListOperationsResponse {
   operations: Operation[];
   nextPageToken: string;
 }
 
-interface ApiResponse {
+export interface ApiResponse {
 
 }
 
-interface Credentials {
+export interface Credentials {
   client_email?: string;
   private_key?: string;
 }
 
-interface ConfigurationObject extends GoogleAuthOptions {
+export interface ConfigurationObject extends GoogleAuthOptions {
   autoRetry?: boolean;
   credentials?: Credentials;
   email?: string;
@@ -65,7 +65,7 @@ interface ConfigurationObject extends GoogleAuthOptions {
   promise?: typeof Promise;
 }
 
-interface CloudFunctionCallback {
+export interface CloudFunctionCallback {
   (
     err: Error|null,
     fn?: CloudFunction|null|undefined,
@@ -73,7 +73,7 @@ interface CloudFunctionCallback {
   ): void;
 }
 
-interface CloudFunctionsCallback {
+export interface CloudFunctionsCallback {
   (
     err: Error|null,
     fns?: CloudFunction[]|null|undefined,
@@ -83,8 +83,8 @@ interface CloudFunctionsCallback {
 }
 
 /*! 
- * @param {ConfigurationObject} [options] Configuration options.
- */
+* @param {ConfigurationObject} [options] Configuration options.
+*/
 class GCF extends Service {
   /**
    * {@link CloudFunction} class.
@@ -164,7 +164,7 @@ class GCF extends Service {
     // & in a type position means type intersection.
     // https://www.typescriptlang.org/docs/handbook/advanced-types.html#intersection-types
     const body: CloudFunctionConfig&
-     {name?: string, runtime?: string} = extend({}, metadata, {name});
+    {name?: string, runtime?: string} = extend({}, metadata, {name});
 
     // @developer @archelogos
     // @TODO business logic here
@@ -265,6 +265,4 @@ promisifyAll(GCF, {
   exclude: ['cloudFunction'],
 });
 
-/**
- */
-export { GCF };
+export {GCF, CloudFunction};

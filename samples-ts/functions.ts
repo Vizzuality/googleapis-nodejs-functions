@@ -2,8 +2,8 @@
 const path = require('path');
 
 // Imports the Google Cloud client library
-import { GCF, CloudFunctionMetadata } from '../build/src';
-import { CloudFunction } from '../build/src/cloudfunction';
+import { CloudFunctionMetadata, CloudFunction } from 'googleapis-nodejs-functions';
+const { GCF } = require('googleapis-nodejs-functions');
 
 // Your Google Cloud Platform project ID
 const projectId = 'cameratraprepo';
@@ -15,24 +15,17 @@ const gcf = new GCF({
 });
 
 // Get Functions
-const getCloudFunctions = async(): Promise<[CloudFunction[], any]>  => {
-  return await gcf.getCloudFunctions() as [CloudFunction[], any];
+const getCloudFunctions = async(): Promise<CloudFunction[]>  => {
+  try {
+    const fns: CloudFunction[] = await (gcf.getCloudFunctions() as Promise<[CloudFunction[], any]>).then(value => value[0]);
+    const fn0: CloudFunction = fns[0];
+    const fn0Metadata = await (fn0.getMetadata({}) as Promise<CloudFunctionMetadata>).then(value => value[0]);
+    console.log(fn0Metadata);
+    return fns;
+  } catch (err) {
+    console.error(err);
+    throw Error(err);
+  }
 };
 
-getCloudFunctions()
-.then(value => {
-  const fns: CloudFunction[] = value[0];
-  const fn0: CloudFunction = fns[0];
-  const fnmPromise = fn0.getMetadata({}) as Promise<CloudFunctionMetadata>;
-  fnmPromise
-  .then(value => {
-    const fn0Metadata: CloudFunctionMetadata = value[0];
-    console.log(fn0Metadata);
-  })
-  .catch(err => {
-    console.log(err);
-  });
-})
-.catch(err => {
-  console.log(err);
-})
+getCloudFunctions();

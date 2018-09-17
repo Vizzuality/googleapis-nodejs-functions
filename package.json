@@ -1,9 +1,9 @@
 {
-  "name": "vizz-googleapis-nodejs-functions",
-  "description": "Google Cloud Functions Client Library for Node.js",
-  "version": "1.0.0",
+  "name": "googleapis-nodejs-functions",
+  "description": "Google Cloud Functions Client Library for Node.js (unofficial)",
+  "version": "0.0.2",
   "license": "Apache-2.0",
-  "author": "Vizzuality",
+  "author": "vizzuality-research",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -73,11 +73,12 @@
     "power-assert": "^1.4.4",
     "prettier": "^1.7.0",
     "prop-assign": "^1.0.0",
+    "proxyquire": "^2.1.0",
     "source-map-support": "^0.5.6",
     "tmp": "^0.0.33",
-    "typescript": "^3.0.1",
-    "uuid": "^3.1.0",
     "tslint": "5.3.2",
-    "tslint-config-airbnb": "^5.9.2"
+    "tslint-config-airbnb": "^5.9.2",
+    "typescript": "^3.0.1",
+    "uuid": "^3.1.0"
   }
 }

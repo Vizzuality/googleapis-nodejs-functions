@@ -37,7 +37,7 @@
 
 ### Installing the client library
 
-    npm install --save vizzuality/googleapis-nodejs-functions
+    npm install --save googleapis-nodejs-functions
 
 ### Using the client library
 

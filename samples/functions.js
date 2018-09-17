@@ -1,7 +1,7 @@
 const path = require('path');
 
 // Imports the Google Cloud client library
-const { GCF } = require('../build/src'); // @TODO vizzuality/googleapis-nodejs-functions
+const { GCF } = require('googleapis-nodejs-functions');
 
 // Your Google Cloud Platform project ID
 const projectId = 'cameratraprepo';
