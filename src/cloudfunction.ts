@@ -21,6 +21,8 @@ export class CloudFunction extends ServiceObject {
    */
   name: string;
 
+  metadata: CloudFunctionMetadata;
+
   /**
    * A reference to the {@link GCF} associated with this {@link CloudFunction}
    * instance.
@@ -36,7 +38,7 @@ export class CloudFunction extends ServiceObject {
    */
   userProject: string;
 
-  constructor(gcf, name, options?) {
+  constructor(gcf, name, metadata?, options?) {
     options = options || {};
 
     const methods = {
@@ -56,10 +58,9 @@ export class CloudFunction extends ServiceObject {
       requestModule: request,
     });
 
-    this.name = name;
-
     this.gcf = gcf;
-
+    this.name = name;
+    this.metadata = metadata;
     this.userProject = options.userProject;
   }
 

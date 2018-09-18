@@ -9,27 +9,53 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require('path');
-const { GCF } = require('googleapis-nodejs-functions');
+// Imports the Google Cloud client library
+//import { CloudFunctionMetadata, CloudFunction } from 'googleapis-nodejs-functions';
+//const { GCF } = require('googleapis-nodejs-functions');
+const src_1 = require("../build/src");
 // Your Google Cloud Platform project ID
 const projectId = 'cameratraprepo';
 // Creates a client
-const gcf = new GCF({
+const gcf = new src_1.GCF({
     keyFilename: `${path.join(__dirname, '../')}credentials.json`,
     projectId
 });
-// Get Functions
-const getCloudFunctions = () => __awaiter(this, void 0, void 0, function* () {
+// // Get Functions
+// const getCloudFunctions = async(): Promise<CloudFunction[]>  => {
+//   try {
+//     const fns: CloudFunction[] = await (gcf.getCloudFunctions() as Promise<[CloudFunction[], any]>).then(value => value[0]);
+//     const fn0: CloudFunction = fns[0];
+//     const fn0Metadata: CloudFunctionMetadata = fn0.metadata;
+//     console.log(fn0Metadata.runtime);
+//     return fns;
+//   } catch (err) {
+//     console.error(err);
+//     throw Error(err);
+//   }
+// };
+// getCloudFunctions();
+// create a new Cloud Function
+const createCloudFunction = (name) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const fns = yield gcf.getCloudFunctions().then(value => value[0]);
-        const fn0 = fns[0];
-        const fn0Metadata = yield fn0.getMetadata({}).then(value => value[0]);
-        console.log(fn0Metadata);
-        return fns;
+        const cloudFunctionConfig = {
+            runtime: 'nodejs6',
+            sourceArchiveUrl: 'gs://wi__global__code/lib.zip',
+            eventTrigger: {
+                service: 'storage.googleapis.com',
+                eventType: 'google.storage.object.finalize',
+                resource: 'projects/_/buckets/wi__global__temp'
+            },
+            entryPoint: 'entrypoint'
+        };
+        const op = yield gcf.createCloudFunction(name, cloudFunctionConfig).then(value => value[0]);
+        console.log(op);
+        return op;
     }
     catch (err) {
         console.error(err);
         throw Error(err);
     }
 });
-getCloudFunctions();
+const cloudFunctionName = 'test';
+createCloudFunction(cloudFunctionName);
 //# sourceMappingURL=functions.js.map

@@ -44,7 +44,7 @@
 ```javascript
 
 // Imports the Google Cloud client library
-const { GCF } = require('../build/src'); // @TODO vizzuality/googleapis-nodejs-functions
+const { GCF } = require('googleapis-nodejs-functions');
 
 // Your Google Cloud Platform project ID
 const projectId = 'YOUR_PROJECT_ID';
@@ -62,13 +62,7 @@ gcf
     const fns = data[0];
     //console.log('FUNCTIONS: ', fns);
     const fn = fns[0];
-    fn.getMetadata()
-    .then(data => {
-      console.log('Function: ', data[0]);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+    console.log(fn.metadata);
   })
   .catch(err => {
     console.error('ERROR:', err);

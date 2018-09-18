@@ -7,15 +7,82 @@ import * as request from 'request';
 
 import { CloudFunction } from './cloudfunction';
 
-// @TODO
-export interface CloudFunctionMetadata {
-  runtime: string;
+export enum CloudFunctionStatus {
+  CLOUD_FUNCTION_STATUS_UNSPECIFIED,
+  ACTIVE,
+  OFFLINE,
+  DEPLOY_IN_PROGRESS,
+  DELETE_IN_PROGRESS,
+  UNKNOWN,
 }
 
-// TODO
+export enum CloudFunctionRuntimes {
+  nodejs6,
+  nodejs8,
+  python3,
+}
+
+export interface HttpsTrigger {
+  url: string;
+}
+
+export interface FailurePolicy {
+  retry: any;
+}
+
+// @developer -> https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
+export interface EventTrigger {
+  eventType: string;
+  resource: string;
+  service: string;
+  failurePolicy?: FailurePolicy;
+}
+
+// @developer -> https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#SourceRepository
+export interface SourceRepository {
+  url: string;
+  deployedUrl?: string;
+}
+
+// @TODO -> DONE v0.0.3
+export interface CloudFunctionMetadata {
+  runtime: string;
+  description: string;
+  status: CloudFunctionStatus;
+  entryPoint: string;
+  timeout: string;
+  availableMemoryMb: number;
+  serviceAccountEmail: string;
+  updateTime: string;
+  versionId: string;
+  labels: any;
+  environmentVariables: any;
+  network: string;
+  maxInstances: number;
+  sourceArchiveUrl?: string;
+  sourceRepository?: SourceRepository;
+  sourceUploadUrl?: string;
+  httpsTrigger?: HttpsTrigger;
+  eventTrigger?: EventTrigger; 
+}
+
+// @TODO -> DONE v0.0.3
 export interface CloudFunctionConfig {
-  runtime?: string;
   location?: string;
+  runtime?: string;
+  description?: string;
+  entryPoint?: string;
+  timeout?: string;
+  availableMemoryMb?: number;
+  labels?: any;
+  //environmentVariables?: any; // beta feature
+  //network?: string; // alpha feature
+  //maxInstances: number; // alpha feature
+  sourceArchiveUrl?: string;
+  sourceRepository?: SourceRepository;
+  sourceUploadUrl?: string;
+  httpsTrigger?: HttpsTrigger;
+  eventTrigger?: EventTrigger; 
 }
 
 export interface CloudFunctionQuery {
@@ -30,15 +97,15 @@ export interface CloudFunctionQuery {
 export interface Status {
   code: number;
   message: string;
-  details: object[];
+  details?: any;
 }
 
 export interface Operation {
   name: string;
-  metadata: object;
+  metadata: any;
   done: boolean;
-  error: Status;
-  response: object;
+  error?: Status;
+  response?: any;
 }
 
 export interface ListOperationsResponse {
@@ -68,7 +135,7 @@ export interface ConfigurationObject extends GoogleAuthOptions {
 export interface CloudFunctionCallback {
   (
     err: Error|null,
-    fn?: CloudFunction|null|undefined,
+    fn?: CloudFunction|null|undefined|Operation,
     apiResponse?: request.Response
   ): void;
 }
@@ -121,11 +188,11 @@ class GCF extends Service {
    * @param {string} name Name of the function.
    * @returns {CloudFunction}
    */
-  public cloudFunction(name: string): CloudFunction {
+  public cloudFunction(name: string, metadata?: CloudFunctionMetadata): CloudFunction {
     if (!name) {
       throw new Error('A function name is needed to use Cloud Functions.');
     }
-    return new CloudFunction(this, name);
+    return new CloudFunction(this, name, metadata);
   }
 
   // @developer @archelogos
@@ -140,13 +207,13 @@ class GCF extends Service {
    * @throws {Error} If a name is not provided.
    *
    */
-  public createCloudFunction(name: string, callback: CloudFunctionCallback): void;
+  public createCloudFunction(name: string,  callback: CloudFunctionCallback): void | Promise<[Operation, any]>;
   public createCloudFunction(
       name: string, metadata: CloudFunctionConfig,
-      callback: CloudFunctionCallback): void;
+      callback?: CloudFunctionCallback): void | Promise<[Operation, any]>;
   public createCloudFunction(
   name: string, metadataOrCallback: CloudFunctionCallback|CloudFunctionConfig,
-  callback?: CloudFunctionCallback): void {
+  callback?: CloudFunctionCallback): void | Promise<[Operation, any]> {
 
     if (!name) {
       throw new Error('A name is required to create a function.');
@@ -164,18 +231,16 @@ class GCF extends Service {
     // & in a type position means type intersection.
     // https://www.typescriptlang.org/docs/handbook/advanced-types.html#intersection-types
     const body: CloudFunctionConfig&
-    {name?: string, runtime?: string} = extend({}, metadata, {name});
+    {name: string, runtime?: string} = extend({}, metadata, {name});
 
     // @developer @archelogos
-    // @TODO business logic here
-    // is there a way to get this dynamically?
-    const functionRuntimes = {
-      node6: 'nodejs6',
-      node8: 'nodejs8',
-      python3: 'python3'
-    };
+    // @TODO business logic here -> runtimes check
 
     const location = metadata.location || this.location; // GCP region
+
+    // @developer @archelogos
+    // @TODO business logic here -> name check
+    body.name = `projects/${this.projectId}/locations/${location}/functions/${name}`
 
     this.request(
         {
@@ -190,15 +255,11 @@ class GCF extends Service {
             return;
           }
 
-          // @developer @archelogos
-          // @TODO wait until the operations is resolved --> return CloudFunction instance
-          const cloudFunction = this.cloudFunction(name);
-          // check this
-          // cloudFunction.metadata = resp;
+          const operation: Operation = resp;
 
           // @developer @archelogos
           // That's the non-null assertion operator (https://stackoverflow.com/questions/42273853/in-typescript-what-is-the-exclamation-mark-bang-operator-when-dereferenci)
-          callback!(null, cloudFunction, resp);
+          callback!(null, operation, resp);
         });
   }
 
@@ -220,6 +281,7 @@ class GCF extends Service {
 
     // @developer @archelogos
     // @TODO check if parent is valid (this.getLocations)
+    // -> https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations/list
 
     this.request(
         {
@@ -234,8 +296,7 @@ class GCF extends Service {
           }
 
           const cloudFunctions = arrify(resp.functions).map(fn => {
-            const cloudFunctionInstance = this.cloudFunction(fn.name);
-            cloudFunctionInstance.metadata = {runtime: fn.runtime};
+            const cloudFunctionInstance = this.cloudFunction(fn.name, (fn as CloudFunctionMetadata));
             return cloudFunctionInstance;
           });
 
@@ -246,6 +307,31 @@ class GCF extends Service {
 
           callback!(null, cloudFunctions, nextQuery, resp);
         });
+  }
+
+  public operation(name: string, callback?: CloudFunctionCallback): void | Promise<[Operation, any]> {
+
+    // @TODO validate name /operations/some/unique/name
+    this.request(
+      {
+        method: 'GET',
+        uri: `/projects/${this.projectId}/operations/${name}`,
+        qs: '',
+        json: {},
+      },
+      (err, resp) => {
+        if (err) {
+          callback!(err, null, resp);
+          return;
+        }
+
+        const operation: Operation = resp;
+  
+        // @developer @archelogos
+        // That's the non-null assertion operator (https://stackoverflow.com/questions/42273853/in-typescript-what-is-the-exclamation-mark-bang-operator-when-dereferenci)
+        callback!(null, operation, resp);
+      });
+
   }
 
 }
