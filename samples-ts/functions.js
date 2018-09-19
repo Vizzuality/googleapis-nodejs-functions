@@ -20,7 +20,7 @@ const gcf = new src_1.GCF({
     keyFilename: `${path.join(__dirname, '../')}credentials.json`,
     projectId
 });
-// // Get Functions
+// Get Functions
 // const getCloudFunctions = async(): Promise<CloudFunction[]>  => {
 //   try {
 //     const fns: CloudFunction[] = await (gcf.getCloudFunctions() as Promise<[CloudFunction[], any]>).then(value => value[0]);
@@ -34,21 +34,33 @@ const gcf = new src_1.GCF({
 //   }
 // };
 // getCloudFunctions();
-// create a new Cloud Function
-const createCloudFunction = (name) => __awaiter(this, void 0, void 0, function* () {
+// // Create a new Cloud Function
+// const createCloudFunction = async(name): Promise<Operation>  => {
+//   try {
+//     const cloudFunctionConfig: CloudFunctionConfig = {
+//       runtime: 'nodejs6',
+//       sourceArchiveUrl: 'gs://wi__global__code/lib.zip',
+//       eventTrigger: {
+//         service: 'storage.googleapis.com',
+//         eventType: 'google.storage.object.finalize',
+//         resource: 'projects/_/buckets/wi__global__temp'
+//       },
+//       entryPoint: 'entrypoint'
+//     }
+//     const op: Operation = await (gcf.createCloudFunction(name, cloudFunctionConfig) as Promise<[Operation, any]>).then(value => value[0]);
+//     console.log(op);
+//     return op;
+//   } catch (err) {
+//     console.error(err);
+//     throw Error(err);
+//   }
+// };
+// const cloudFunctionName = 'test';
+// createCloudFunction(cloudFunctionName);
+const getOperation = (name) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const cloudFunctionConfig = {
-            runtime: 'nodejs6',
-            sourceArchiveUrl: 'gs://wi__global__code/lib.zip',
-            eventTrigger: {
-                service: 'storage.googleapis.com',
-                eventType: 'google.storage.object.finalize',
-                resource: 'projects/_/buckets/wi__global__temp'
-            },
-            entryPoint: 'entrypoint'
-        };
-        const op = yield gcf.createCloudFunction(name, cloudFunctionConfig).then(value => value[0]);
-        console.log(op);
+        const op = yield gcf.operation(name).then(value => value[0]);
+        //console.log(op);
         return op;
     }
     catch (err) {
@@ -56,6 +68,6 @@ const createCloudFunction = (name) => __awaiter(this, void 0, void 0, function* 
         throw Error(err);
     }
 });
-const cloudFunctionName = 'test';
-createCloudFunction(cloudFunctionName);
+const operationName = 'operations/Y2FtZXJhdHJhcHJlcG8vdXMtY2VudHJhbDEvdGVzdC81RTZjQWwyU0NZRQ';
+getOperation(operationName);
 //# sourceMappingURL=functions.js.map

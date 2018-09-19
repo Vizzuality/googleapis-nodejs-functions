@@ -315,9 +315,8 @@ class GCF extends Service {
     this.request(
       {
         method: 'GET',
-        uri: `/projects/${this.projectId}/operations/${name}`,
-        qs: '',
-        json: {},
+        uri: `/${name}`,
+        qs: ''
       },
       (err, resp) => {
         if (err) {
