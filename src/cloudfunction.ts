@@ -51,7 +51,7 @@ export class CloudFunction extends ServiceObject {
 
     super({
       parent: gcf,
-      baseUrl: '', // @TODO
+      baseUrl: `projects/${gcf.projectId}/locations/${gcf.location}/functions`, // @TODO
       id: name,
       createMethod: gcf.createCloudFunction.bind(gcf),
       methods,
@@ -73,19 +73,26 @@ export class CloudFunction extends ServiceObject {
    * @param {FunctionCallback} [callback] Callback function.
    * @returns {Promise<Operation>}
    */
-  delete(options, callback?) {
+  delete(options?, callback?) {
     if (is.fn(options)) {
       callback = options;
       options = {};
     }
 
     this.request(
-        {
-          method: 'DELETE',
-          uri: '',
-          qs: options,
-        },
-        callback || util.noop);
+      {
+        method: 'DELETE',
+        uri: '',
+        qs: options,
+      }, (err, resp) => {
+        if (err) {
+          callback!(err, resp);
+          console.log(err);
+          return;
+        }
+        console.log(resp);
+        callback!(null, resp) || util.noop
+      });
   }
 
   /**
@@ -98,7 +105,7 @@ export class CloudFunction extends ServiceObject {
    * @returns {Promise<boolean>}
    *
    */
-  exists(options, callback?) {
+  exists(options?, callback?) {
     if (is.fn(options)) {
       callback = options;
       options = {};

@@ -58,16 +58,21 @@ const gcf = new GCF({
 // createCloudFunction(cloudFunctionName);
  
 
-const getOperation = async(name): Promise<Operation>  => {
-  try {
-    const op: Operation = await (gcf.operation(name) as Promise<[Operation, any]>).then(value => value[0]);
-    //console.log(op);
-    return op;
-  } catch (err) {
-    console.error(err);
-    throw Error(err);
-  }
-};
+// const getOperation = async(name): Promise<Operation>  => {
+//   try {
+//     const op: Operation = await (gcf.operation(name) as Promise<[Operation, any]>).then(value => value[0]);
+//     //console.log(op);
+//     return op;
+//   } catch (err) {
+//     console.error(err);
+//     throw Error(err);
+//   }
+// };
 
-const operationName = 'operations/Y2FtZXJhdHJhcHJlcG8vdXMtY2VudHJhbDEvdGVzdC81RTZjQWwyU0NZRQ';
-getOperation(operationName);
+// const operationName = 'operations/Y2FtZXJhdHJhcHJlcG8vdXMtY2VudHJhbDEvdGVzdC81RTZjQWwyU0NZRQ';
+// getOperation(operationName);
+
+
+const fn: CloudFunction = gcf.cloudFunction('staging_project_1__check_object');
+
+fn.delete();

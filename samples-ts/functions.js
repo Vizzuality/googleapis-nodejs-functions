@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require('path');
 // Imports the Google Cloud client library
@@ -57,17 +49,18 @@ const gcf = new src_1.GCF({
 // };
 // const cloudFunctionName = 'test';
 // createCloudFunction(cloudFunctionName);
-const getOperation = (name) => __awaiter(this, void 0, void 0, function* () {
-    try {
-        const op = yield gcf.operation(name).then(value => value[0]);
-        //console.log(op);
-        return op;
-    }
-    catch (err) {
-        console.error(err);
-        throw Error(err);
-    }
-});
-const operationName = 'operations/Y2FtZXJhdHJhcHJlcG8vdXMtY2VudHJhbDEvdGVzdC81RTZjQWwyU0NZRQ';
-getOperation(operationName);
+// const getOperation = async(name): Promise<Operation>  => {
+//   try {
+//     const op: Operation = await (gcf.operation(name) as Promise<[Operation, any]>).then(value => value[0]);
+//     //console.log(op);
+//     return op;
+//   } catch (err) {
+//     console.error(err);
+//     throw Error(err);
+//   }
+// };
+// const operationName = 'operations/Y2FtZXJhdHJhcHJlcG8vdXMtY2VudHJhbDEvdGVzdC81RTZjQWwyU0NZRQ';
+// getOperation(operationName);
+const fn = gcf.cloudFunction('staging_project_1__check_object');
+fn.delete();
 //# sourceMappingURL=functions.js.map
